@@ -10,12 +10,14 @@ export class MessageRepository extends Repository<Message> {
 
     async getMessages(filterUnread: boolean, user: User) : Promise<Message[]> {
         const query = this.createQueryBuilder('message')
-        .where('message.sender = :userName', {userName: user.userName});
-        if(filterUnread) {
-            query.andWhere('message.status = :status', {status: MessageStatus.UNREAD})
-        }
+        .where('message.sender = :userName', {userName: user.userName})
+        .orWhere('message.recciver = :userName', {userName: user.userName})
         const messages = await query.getMany();
-        return messages;
+        if(filterUnread) {
+            return messages.filter(message => message.status === MessageStatus.UNREAD);
+        } else {
+            return messages;
+        }
     }
     
     async createMessage(messageDto: CreateMessageDto, user: User): Promise<Message> {

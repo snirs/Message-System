@@ -36,7 +36,7 @@ export class MessageController {
         return this.messageService.readMessage(user)
     }
 
-    @Delete('/:id/delete')
+    @Delete('/delete/:id')
     deleteMessage(@Param('id') id: string, @GetUser() user: User) {
         return this.messageService.deleteMessagebyId(id, user)
     }
